@@ -1,5 +1,7 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Compass, Star, CheckCircle, Clock } from 'lucide-react';
+import { Card, CardContent } from "../components/ui/card";
 
 const QuestsPage: React.FC = () => {
   // Mock data for quests (replace with API call)
@@ -34,8 +36,15 @@ const QuestsPage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Quests</h1>
+    <div className="container mx-auto px-4 py-16 max-w-4xl bg-gradient-to-b from-[#f2f1ec] to-white min-h-screen">
+      <motion.h1 
+        className="text-4xl font-bold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-[#365b6d] to-[#bcac88]"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        Quran Learning Quests
+      </motion.h1>
       
       <div className="grid gap-6">
         {quests.map((quest) => (
@@ -48,54 +57,56 @@ const QuestsPage: React.FC = () => {
 
 const QuestCard: React.FC<{ quest: any }> = ({ quest }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-2">{quest.title}</h2>
-      <p className="text-gray-600 mb-4">{quest.description}</p>
-      
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <Star className="w-5 h-5 text-yellow-500 mr-2" />
-          <span>Difficulty: {quest.difficulty}</span>
+    <Card className="bg-white bg-opacity-80 shadow-md hover:shadow-lg transition-shadow duration-300">
+      <CardContent className="p-6">
+        <h2 className="text-2xl font-semibold mb-2 text-[#365b6d]">{quest.title}</h2>
+        <p className="text-gray-600 mb-4">{quest.description}</p>
+        
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            <Star className="w-5 h-5 text-[#bcac88] mr-2" />
+            <span className="text-[#365b6d]">Difficulty: {quest.difficulty}</span>
+          </div>
+          <div className="flex items-center">
+            <Clock className="w-5 h-5 text-[#bcac88] mr-2" />
+            <span className="text-[#365b6d]">Est. Time: {quest.estimatedTime}</span>
+          </div>
         </div>
-        <div className="flex items-center">
-          <Clock className="w-5 h-5 text-blue-500 mr-2" />
-          <span>Est. Time: {quest.estimatedTime}</span>
+        
+        <div className="bg-[#f2f1ec] p-3 rounded-md flex items-center mb-4">
+          <Compass className="w-5 h-5 text-[#365b6d] mr-2" />
+          <span className="font-medium text-[#365b6d]">Reward: {quest.reward}</span>
         </div>
-      </div>
-      
-      <div className="bg-purple-50 p-3 rounded-md flex items-center mb-4">
-        <Compass className="w-5 h-5 text-purple-500 mr-2" />
-        <span className="font-medium">Reward: {quest.reward}</span>
-      </div>
-      
-      <div className="mb-4">
-        <div className="flex justify-between mb-1">
-          <span className="text-sm font-medium">Progress</span>
-          <span className="text-sm font-medium">{quest.progress}%</span>
+        
+        <div className="mb-4">
+          <div className="flex justify-between mb-1">
+            <span className="text-sm font-medium">Progress</span>
+            <span className="text-sm font-medium">{quest.progress}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              className="bg-green-600 h-2.5 rounded-full"
+              style={{ width: `${quest.progress}%` }}
+            ></div>
+          </div>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2.5">
-          <div
-            className="bg-green-600 h-2.5 rounded-full"
-            style={{ width: `${quest.progress}%` }}
-          ></div>
-        </div>
-      </div>
-      
-      {quest.progress === 0 ? (
-        <button className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-300">
-          Start Quest
-        </button>
-      ) : quest.progress === 100 ? (
-        <button className="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded cursor-not-allowed flex items-center justify-center">
-          <CheckCircle className="w-5 h-5 mr-2" />
-          Completed
-        </button>
-      ) : (
-        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
-          Continue Quest
-        </button>
-      )}
-    </div>
+        
+        {quest.progress === 0 ? (
+          <button className="w-full bg-[#365b6d] text-white py-2 px-4 rounded hover:bg-[#2a4a5a] transition duration-300">
+            Start Quest
+          </button>
+        ) : quest.progress === 100 ? (
+          <button className="w-full bg-[#bcac88] text-white py-2 px-4 rounded cursor-not-allowed flex items-center justify-center">
+            <CheckCircle className="w-5 h-5 mr-2" />
+            Completed
+          </button>
+        ) : (
+          <button className="w-full bg-[#365b6d] text-white py-2 px-4 rounded hover:bg-[#2a4a5a] transition duration-300">
+            Continue Quest
+          </button>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
