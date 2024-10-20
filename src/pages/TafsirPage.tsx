@@ -38,6 +38,7 @@ import { motion } from 'framer-motion';
 
 
 
+import { Card, CardContent } from "../components/ui/card";
 
 
 
@@ -45,6 +46,27 @@ import { motion } from 'framer-motion';
 
 
 
+import { Button } from "../components/ui/button";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+interface TafsirItem {
+  id: number;
+  verse_key: string;
+  text: string;
+}
 
 const TafsirPage: React.FC = () => {
 
@@ -183,109 +205,28 @@ const TafsirPage: React.FC = () => {
 
 
         console.log('Tafsir data:', tafsirData);
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
-        if (tafsirData && tafsirData.length > 0 && tafsirData[0].text) {
-
-
-
-
-
-
-
-          setTafsirText(tafsirData[0].text);
-
-
-
-
-
-
-
+        if (tafsirData && tafsirData.tafsirs && tafsirData.tafsirs.length > 0) {
+          if (verseNumber) {
+            const verseTafsir = tafsirData.tafsirs.find((t: TafsirItem) => t.verse_key === `${surahNumber}:${verseNumber}`);
+            if (verseTafsir) {
+              setTafsirText(verseTafsir.text);
+            } else {
+              setTafsirText('No tafsir available for this specific verse.');
+            }
+          } else {
+            // If no verseNumber, concatenate all tafsir texts
+            setTafsirText(tafsirData.tafsirs.map((t: TafsirItem) => t.text).join('\n\n'));
+          }
         } else {
-
-
-
-
-
-
-
           setTafsirText('No tafsir text available for this surah.');
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
       } catch (error) {
-
-
-
-
-
-
-
         console.error('Error fetching tafsir data:', error);
-
-
-
-
-
-
-
         setError(`Failed to fetch tafsir data: ${error instanceof Error ? error.message : 'Unknown error'}`);
-
-
-
-
-
-
-
       } finally {
-
-
-
-
-
-
-
         setLoading(false);
-
-
-
-
-
-
-
       }
-
-
-
-
-
-
-
     };
 
 
@@ -310,7 +251,7 @@ const TafsirPage: React.FC = () => {
 
 
 
-  }, [surahNumber]);
+  }, [surahNumber, verseNumber]);
 
 
 
@@ -414,38 +355,12 @@ const TafsirPage: React.FC = () => {
 
 
 
-        <div className="text-center text-red-500 bg-white p-8 rounded-lg shadow-lg">
-
-
-
-
-
-
-
-          <h2 className="text-2xl font-bold mb-4">Error</h2>
-
-
-
-
-
-
-
-          <p>{error}</p>
-
-
-
-
-
-
-
-        </div>
-
-
-
-
-
-
-
+        <Card className="w-full max-w-md">
+          <CardContent className="text-center p-6">
+            <h2 className="text-2xl font-bold mb-4 text-red-500">Error</h2>
+            <p>{error}</p>
+          </CardContent>
+        </Card>
       </div>
 
 
@@ -478,34 +393,6 @@ const TafsirPage: React.FC = () => {
 
 
 
-  const formatTafsirText = (text: string) => {
-
-
-
-    // Replace Arabic text with bold styling
-
-
-
-    return text.replace(/[\u0600-\u06FF]+/g, (match) => `<span class="font-bold text-xl">${match}</span>`);
-
-
-
-  };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   return (
 
 
@@ -520,8 +407,8 @@ const TafsirPage: React.FC = () => {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-gradient-to-b from-[#f2f1ec] to-[#e2e1dc] py-16 px-4 sm:px-6 lg:px-8"
     >
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div className="p-8">
+      <Card className="max-w-4xl mx-auto">
+        <CardContent className="p-8">
           <Link 
             to={`/surah/${surahNumber}`} 
             className="inline-flex items-center text-[#365b6d] hover:text-[#bcac88] transition-colors duration-200 mb-8"
@@ -537,12 +424,12 @@ const TafsirPage: React.FC = () => {
           
           <div className="prose prose-lg max-w-none text-gray-700">
             <div 
-              dangerouslySetInnerHTML={{ __html: formatTafsirText(tafsirText) }} 
+              dangerouslySetInnerHTML={{ __html: tafsirText }} 
               className="leading-relaxed space-y-6"
             />
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 };
